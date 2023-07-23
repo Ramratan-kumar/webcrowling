@@ -21,6 +21,15 @@ async function extractHTML(url){
        let reivewObj = formatReviewAndRating(overAllrating)
        let cardsHandler = await page.$$(".x9f619.x193iq5w.x1sltb1f.x3fxtfs.x1swvt13.x1pi30zi.xw7yly9.x1xwk8fm>div>div")
    
+       let children = await page.$$('.x9f619.x193iq5w.x1sltb1f.x3fxtfs.x1swvt13.x1pi30zi.xw7yly9.x1xwk8fm', e => {
+        const data = [];
+        for (const child of e.children) {
+            data.push({ tagName: child.tagName, innerText: child.innerText });
+        }
+        return data;
+    });
+
+
        reivewObj.aggregated_reviews = [] 
        for(let ele of cardsHandler){
             let object = {}
@@ -31,6 +40,7 @@ async function extractHTML(url){
             object.date = "";
             reivewObj.aggregated_reviews.push(object);
         }
+        await browser.close();
         return reivewObj
     }catch(err){
         console.log(err);
