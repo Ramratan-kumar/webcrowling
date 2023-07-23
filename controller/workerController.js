@@ -26,16 +26,17 @@ async function workerController(req, res) {
                 }
                 sortByDateService.sortReivewByDate(data)
                 if (filter_date) {
-                    filterService.filterReivewByDate(filter_date,data)
+                    filterService.filterReivewByDate(filter_date, data)
                 }
-
+                getReviewCount(data)
                 return res.status(200).json(data)
             case 'glassdoor':
                 let glassdoorReivew = await glassdoorService.extractHTML(req.body.url);
                 sortByDateService.sortReivewByDate(glassdoorReivew)
                 if (filter_date) {
-                    filterService.filterReivewByDate(filter_date,glassdoorReivew)
+                    filterService.filterReivewByDate(filter_date, glassdoorReivew)
                 }
+                getReviewCount(glassdoorReivew)
                 return res.status(200).json(glassdoorReivew)
 
             default:
@@ -43,7 +44,16 @@ async function workerController(req, res) {
         }
 
     } catch (err) {
-        console.log(err);
-        return res.status(500).json({ message: err })
+        return res.status(400).json({
+            "response_code": 400,
+            "error": {
+                "message": "Network Issue"
+            }
+        })
     }
+}
+
+function getReviewCount(data){
+    data.review_aggregated_count = data.aggregated_reviews.length;
+    data.response_code = 200
 }
