@@ -10,11 +10,11 @@ function extractHTML(url) {
     return new Promise(async (resolve, reject) => {
         try {
             
-             const pageHTML =await axios.get(url)
+            let pageHTML =await axios.get(url)
             // fs.writeFileSync("./webContent.txt",pageHTML.data,(err)=>{
             //     console.log(err);
             // })
-           // let pageHTML = fs.readFileSync("./webContent.txt", { encoding: 'utf8', flag: 'r' });
+            //let pageHTML = fs.readFileSync("./webContent.html", { encoding: 'utf8', flag: 'r' });
             let $ = cheerio.load(pageHTML.data)
             let totalPage = $("div.border-color--default__09f24__NPAKY.text-align--center__09f24__fYBGO>span.css-chan6m").text();
             totalPage = +totalPage.split(" ")[2];
@@ -23,14 +23,14 @@ function extractHTML(url) {
             
             let commentList = { review_count: totalReview, overAllrating: overAllrating, aggregated_reviews: [] };
             // call for 1st page and extract result
-            $ = cheerio.load(pageHTML)
+          
             let $li = $('ul.undefined.list__09f24__ynIEd>li');
             await getCrawlingResult($, $li, commentList)
 
             let perPageRecord = 10
          
             for(let i=1;i<totalPage;i++){
-                pageHTML = await axios.get(url+'/'+perPageRecord*i);
+                pageHTML = await axios.get(url+'?start='+perPageRecord*i);
                 $ = cheerio.load(pageHTML.data)
                 $li = $('ul.undefined.list__09f24__ynIEd>li');
                 await getCrawlingResult($, $li, commentList)
@@ -53,7 +53,7 @@ function getCrawlingResult($, $li, commentList) {
     >a`).text();
                 let date = $(this).find(`div.border-color--default__09f24__NPAKY
     >div.arrange-unit__09f24__rqHTg.arrange-unit-fill__09f24__CUubG.border-color--default__09f24__NPAKY
-    >span.css-chan6m`).text();
+    >span.css-chan6m:first`).text();
                 let rating = $(this).find(`
     div.border-color--default__09f24__NPAKY
     >span.display--inline__09f24__c6N_k.border-color--default__09f24__NPAKY
@@ -68,7 +68,7 @@ function getCrawlingResult($, $li, commentList) {
                     object.date = moment(date).format("YYYY-MM-DD");
                     object.comment = comment;
                     commentList.aggregated_reviews.push(object);
-                    console.log(date)
+                    
                 }
             });
             resolve('')
