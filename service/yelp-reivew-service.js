@@ -33,8 +33,6 @@ function extractHTML(url) {
             for(let i=1;i<totalPage;i++){
                 pageHTML = await axios.get(url+'?start='+perPageRecord*i);
                 $ = cheerio.load(pageHTML.data)
-                
-                // $ = cheerio.load(pageHTML)
                 $li = $('ul.undefined.list__09f24__ynIEd>li');
                 await getCrawlingResult($, $li, commentList)
             }

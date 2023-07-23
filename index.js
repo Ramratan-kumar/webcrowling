@@ -13,7 +13,7 @@ app.use(bodyParser.json({ limit: '50mb', extended: true }));
 app.use(bodyParser.urlencoded({ extended: true })); 
 app.use(upload.array()); 
 app.use(express.static('public'));
-app.use("/reviews",require("./worker.router"))
+app.use("/reviews",require("./router/worker.router"))
 app.listen(8080,function(err,success){
     if(!err){
         console.log("server litning on 8080")
