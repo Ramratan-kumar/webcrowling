@@ -12,7 +12,7 @@ async function extractHTML(url){
            
         });
         const page = await browser.newPage();
-        await page.goto('https://www.facebook.com/workingwithnaturenotagainstit/reviews', {
+        await page.goto(url, {
             waitUntil: "load"
         });
         let element  = await page.$("div.x78zum5.xdt5ytf.x4cne27.xifccgj>div.xzueoph.x1k70j0n");
