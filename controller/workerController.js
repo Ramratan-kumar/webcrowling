@@ -4,7 +4,7 @@ const glassdoorService = require("../service/glasdoor-review-service")
 const fs = require("fs");
 const filterService = require("../service/filter-by-date-service");
 const sortByDateService = require("../service/sorting-by-date-service");
-
+const facbookReviewService = require("../service/facebook-review")
 module.exports = {
     workerController: workerController
 }
@@ -38,6 +38,9 @@ async function workerController(req, res) {
                 }
                 getReviewCount(glassdoorReivew)
                 return res.status(200).json(glassdoorReivew)
+            case 'facebook':
+                let faceBookreview = await facbookReviewService.extractHTML(req.body.url);
+                return res.status(200).json(faceBookreview)
 
             default:
                 res.status(200).json({ message: "no option provided" })
