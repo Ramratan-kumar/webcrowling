@@ -11,17 +11,18 @@ function extractHTML(url) {
         try {
             
             let pageHTML =await axios.get(url)
+            let $ = cheerio.load(pageHTML.data)
             // fs.writeFileSync("./webContent.txt",pageHTML.data,(err)=>{
             //     console.log(err);
             // })
-            //let pageHTML = fs.readFileSync("./webContent.html", { encoding: 'utf8', flag: 'r' });
-            let $ = cheerio.load(pageHTML.data)
+            // let pageHTML = fs.readFileSync("./webContent.html", { encoding: 'utf8', flag: 'r' });
+            // let $ = cheerio.load(pageHTML)
             let totalPage = $("div.border-color--default__09f24__NPAKY.text-align--center__09f24__fYBGO>span.css-chan6m").text();
             totalPage = +totalPage.split(" ")[2];
             let overAllrating = $('div.border-color--default__09f24__NPAKY>div>div>div>span.display--inline__09f24__c6N_k.border-color--default__09f24__NPAKY').find('div').attr('aria-label')
             let totalReview = $('div.border-color--default__09f24__NPAKY').find('p.css-foyide').text()
             
-            let commentList = { review_count: totalReview, overAllrating: overAllrating, aggregated_reviews: [] };
+            let commentList = { review_count: totalReview.split(" ")[0], overAllrating: overAllrating.split(" ")[0], aggregated_reviews: [] };
             // call for 1st page and extract result
           
             let $li = $('ul.undefined.list__09f24__ynIEd>li');
@@ -32,6 +33,8 @@ function extractHTML(url) {
             for(let i=1;i<totalPage;i++){
                 pageHTML = await axios.get(url+'?start='+perPageRecord*i);
                 $ = cheerio.load(pageHTML.data)
+                
+                // $ = cheerio.load(pageHTML)
                 $li = $('ul.undefined.list__09f24__ynIEd>li');
                 await getCrawlingResult($, $li, commentList)
             }

@@ -1,5 +1,6 @@
 "use strict"
 const workerService = require("./workerService");
+const fs = require("fs")
 
 module.exports = {
     workerController:workerController
@@ -12,7 +13,15 @@ async function workerController(req,res){
         let filter_date = req.body.filter_date;
         switch(source){
             case 'yelp':
-                let data = await workerService.extractHTML(url);
+                let cachedData = fs.readFileSync("./localcache.json",{ encoding: 'utf8', flag: 'r' });
+                let data = {};
+                if(cachedData){
+                    data = JSON.parse(cachedData);
+                }else{
+                    data = await workerService.extractHTML(url);
+                    fs.writeFileSync("./localcache.json",JSON.stringify(data))
+                }
+               
                 if(filter_date){
                     data.aggregated_reviews = data.aggregated_reviews.filter((ele)=>ele.date<=filter_date)
                 }
