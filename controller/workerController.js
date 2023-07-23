@@ -24,7 +24,7 @@ async function workerController(req, res) {
                     data = await workerService.extractHTML(url);
                     fs.writeFileSync("./localcache.json", JSON.stringify(data))
                 }
-
+                sortByDateService.sortReivewByDate(data)
                 if (filter_date) {
                     filterService.filterReivewByDate(filter_date,data)
                 }
