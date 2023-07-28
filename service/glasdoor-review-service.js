@@ -17,29 +17,30 @@ async function extractHTML(url) {
     await page.goto(url, {
       waitUntil: "load"
     });
+    await page.click('a[data-test=reviewSeeAllLink]')
+    await require('util').promisify(setTimeout)(3000);
     let el = await page.$("div.d-flex.justify-content-between.justify-content-sm-around.mx-std");
     let review = await page.evaluate(el => el.querySelectorAll("a")[1].textContent, el);
 
     el = await page.$("div.empStatsBody");
+
     let overAllRating = await page.evaluate(el => el.querySelector("div.v2__EIReviewsRatingsStylesV2__ratingNum.v2__EIReviewsRatingsStylesV2__large").textContent, el);
 
     let reivewObj = { review_count: parseInt(review.replace("Reviews", '')), over_all_raring: overAllRating, aggregated_reviews: [] }
 
     totalPage = getTotalPage(reivewObj.review_count);
 
-
-
     reivewObj.aggregated_reviews = []
-    for (let pageNo = 1; pageNo < totalPage; pageNo++) {
+    
+    for (let pageNo = 1; pageNo <= totalPage; pageNo++) {
      
       let cardsHandler = await page.$$("ol>li")
 
       await getReviewPageWise(page, cardsHandler, reivewObj)
-      if (pageNo != totalPage - 1) {
+      if (pageNo != totalPage) {
          await page.click('.nextButton');
-        // await page.waitForNavigation({waitUntil: "load"})
+         await require('util').promisify(setTimeout)(3000);
       }
-
     }
     // await browser.close();
     return reivewObj
