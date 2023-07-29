@@ -31,7 +31,7 @@ async function workerController(req, res) {
                 getReviewCount(data)
                 return res.status(200).json(data)
             case 'glassdoor':
-                let glassdoorReivew = await glassdoorService.extractHTML(req.body.url);
+                let glassdoorReivew = await glassdoorService.glassDoorReivew(req.body.url);
                 sortByDateService.sortReivewByDate(glassdoorReivew)
                 if (filter_date) {
                     filterService.filterReivewByDate(filter_date, glassdoorReivew)
@@ -39,7 +39,8 @@ async function workerController(req, res) {
                 getReviewCount(glassdoorReivew)
                 return res.status(200).json(glassdoorReivew)
             case 'facebook':
-                let faceBookreview = await facbookReviewService.extractHTML(req.body.url);
+                let faceBookreview = await facbookReviewService.facebookReivew(req.body.url);
+                getReviewCount(faceBookreview)
                 return res.status(200).json(faceBookreview)
 
             default:

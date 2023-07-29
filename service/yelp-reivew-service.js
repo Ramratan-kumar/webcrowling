@@ -22,7 +22,7 @@ function extractHTML(url) {
             let overAllrating = $('div.border-color--default__09f24__NPAKY>div>div>div>span.display--inline__09f24__c6N_k.border-color--default__09f24__NPAKY').find('div').attr('aria-label')
             let totalReview = $('div.border-color--default__09f24__NPAKY').find('p.css-foyide').text()
             
-            let commentList = { review_count: totalReview.split(" ")[0], overAllrating: overAllrating.split(" ")[0], aggregated_reviews: [] };
+            let commentList = { review_count: totalReview.split(" ")[0], over_all_rating: +overAllrating.split(" ")[0], aggregated_reviews: [] };
             // call for 1st page and extract result
           
             let $li = $('ul.undefined.list__09f24__ynIEd>li');
